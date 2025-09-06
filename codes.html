@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lock Sheet</title>
+<style>
+  :root {--w: 329px;--h: 364px;--bg:#301901;--fg:#ffffff;--muted:#f07b05;--line:#f07b05;--accent:#4ea1ff;--ok:#26fdff;--row-ok:#04181A;--danger:#ff5a5f;}
+  *{box-sizing:border-box;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+  html,body{margin:0;background:var(--bg);color:var(--fg)}
+  .app{width:var(--w);height:var(--h);display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg)}
+  header{padding:6px 10px;border-bottom:1px solid var(--line);font-weight:600;font-size:12px;color:var(--fg);letter-spacing:.4px;text-transform:uppercase}
+  .table-wrap{flex:1;overflow:auto}
+  table{width:100%;border-collapse:collapse;table-layout:auto;font-size:12px}
+  thead th{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:1;padding:6px 4px;color:var(--fg);font-weight:600}
+  tbody td{border-bottom:1px dashed var(--line);padding:4px;text-align:center}
+  th:nth-child(1){width:43%}
+  th:nth-child(2){width:12%}
+  th:nth-child(3){width:30%}
+  th:nth-child(4){width:15%}
+  select{width:100%;padding:0;border:0;background:transparent;color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none} .completed select{background:#1fb86a !important;color:#000}
+  .num-cell{cursor:pointer;user-select:none;text-align:center;min-height:20px}
+  .num-cell:empty::before{content:"—";color:var(--fg)}
+  .check-cell{text-align:center;background:var(--bg)}
+  input[type="checkbox"]{width:16px;height:16px}
+  .completed td{background:#1fb86a !important;color:#000;text-decoration:line-through} .completed .check-cell{background:#1fb86a !important}
+  .completed td{color:#fff;text-decoration:line-through}
+  footer{border-top:1px solid var(--line);padding:8px;display:flex;justify-content:flex-end;background:var(--bg)}
+  button{padding:4px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--fg);cursor:pointer}
+  /* Overrides for minimalist + fit */
+  header{display:none}
+  .table-wrap{flex:1;overflow:hidden}
+  .completed{background:#1fb86a !important}
+  .completed td{background:inherit}
+  input[type="checkbox"]{accent-color: currentColor;background:transparent}
+  /* Ensure select adopts row background when completed */
+  .completed select{background:inherit}
+  /* Ensure dropdown option list is dark themed */
+  select option{background:#0b0f14;color:inherit}
+  /* Force dark theme for dropdown option list (cross‑browser best effort) */
+  body{ color-scheme: dark; }
+  option, optgroup{ background: var(--bg); color: var(--fg); }
+  .completed option, .completed optgroup{ background: var(--bg); color: var(--fg); }
+</style>
+</head>
+<body>
+  <div class="app" id="app">
+    
+    <div class="table-wrap">
+      <table>
+        <colgroup>
+          <col id="col1" />
+          <col id="col2" />
+          <col id="col3" />
+          <col id="col4" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Lock Type</th>
+            <th>#</th>
+            <th>Code</th>
+            <th>✓</th>
+          </tr>
+        </thead>
+        <tbody id="body"></tbody>
+      </table>
+    </div>
+    <footer>
+      <button class="reset" id="resetBtn">Reset</button>
+    </footer>
+
+    <div class="overlay" id="overlay" aria-hidden="true" style="display:none"></div>
+  </div>
+
+<script>
+(function(){
+  const TYPES = ["","Power Container","Container","Locker"];
+  const ROWS = 8;
+  const body = document.getElementById('body');
+  const resetBtn = document.getElementById('resetBtn');
+
+  for(let r=0;r<ROWS;r++){
+    const tr = document.createElement('tr');
+
+    const tdType = document.createElement('td');
+    const sel = document.createElement('select');
+    TYPES.forEach((t,i)=>{
+      const o = document.createElement('option');
+      o.value = t; o.textContent = i===0? '—' : t;
+      sel.appendChild(o);
+    });
+    tdType.appendChild(sel);
+    tr.appendChild(tdType);
+
+    const tdNum = document.createElement('td');
+    tdNum.className='num-cell';
+    tdNum.dataset.max='2';
+    tr.appendChild(tdNum);
+
+    const tdCode = document.createElement('td');
+    tdCode.className='num-cell';
+    tdCode.dataset.max='4';
+    tr.appendChild(tdCode);
+
+    const tdChk = document.createElement('td');
+    tdChk.className='check-cell';
+    const chk = document.createElement('input');
+    chk.type='checkbox';
+    chk.addEventListener('change',()=>{
+      if(chk.checked){ tr.classList.add('completed'); }
+      else { tr.classList.remove('completed'); }
+    });
+    tdChk.appendChild(chk);
+    tr.appendChild(tdChk);
+
+    body.appendChild(tr);
+  }
+
+  body.addEventListener('click', (e)=>{
+    const td = e.target.closest('.num-cell');
+    if(!td) return;
+    const val = prompt("Enter value:", td.textContent.trim()==='—'? '' : td.textContent.trim());
+    if(val===null) return;
+    const maxLen = parseInt(td.dataset.max||'4',10);
+    const clean = val.replace(/\D/g,'').slice(0,maxLen);
+    td.textContent = clean || '—';
+  });
+
+  resetBtn.addEventListener('click', ()=>{
+    const ok = confirm('Reset all entries?');
+    if(!ok) return;
+    document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
+    document.querySelectorAll('.num-cell').forEach(c=>c.textContent='—');
+    document.querySelectorAll('input[type="checkbox"]').forEach(ch=>{ch.checked=false});
+    document.querySelectorAll('tbody tr').forEach(tr=>tr.classList.remove('completed'));
+  });
+})();
+  // Dynamic column widths based on content (minimal visuals)
+  function setColWidths(){
+    const ctx = document.createElement('canvas').getContext('2d');
+    const table = document.querySelector('table');
+    const style = getComputedStyle(table);
+    ctx.font = `${style.fontSize} ${style.fontFamily}`;
+    const measure = (t)=> Math.ceil(ctx.measureText(t).width);
+    const lockMax = Math.max(measure('Lock Type'), measure('Power Container')) + 16;
+    const numMax  = Math.max(measure('#'), measure('88'), measure('—')) + 12;
+    const codeMax = Math.max(measure('Code'), measure('8888'), measure('—')) + 12;
+    const checkMax= Math.max(measure('✓'), 22);
+    const total = lockMax + numMax + codeMax + checkMax;
+    const w = table.getBoundingClientRect().width || 329;
+    const scale = w/total;
+    const widths = [lockMax, numMax, codeMax, checkMax].map(x=>Math.max(30, Math.floor(x*scale)));
+    document.getElementById('col1').style.width = widths[0] + 'px';
+    document.getElementById('col2').style.width = widths[1] + 'px';
+    document.getElementById('col3').style.width = widths[2] + 'px';
+    document.getElementById('col4').style.width = widths[3] + 'px';
+  }
+  window.addEventListener('resize', setColWidths);
+  setTimeout(setColWidths, 0);
+</script>
+</body>
+</html>
