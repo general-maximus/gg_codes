@@ -5,39 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Lock Sheet</title>
 <style>
-  :root {--w: 329px;--h: 364px;--bg:#301901;--fg:#ffffff;--muted:#f07b05;--line:#f07b05;--accent:#4ea1ff;--ok:#26fdff;--row-ok:#04181A;--danger:#ff5a5f;}
+  :root {--w:329px;--h:364px;--bg:#301901;--fg:#ffffff;--muted:#f07b05;--line:#f07b05;--accent:#4ea1ff;--danger:#ff5a5f;}
   *{box-sizing:border-box;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
   html,body{margin:0;background:var(--bg);color:var(--fg)}
   .app{width:var(--w);height:var(--h);display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg)}
-  header{padding:6px 10px;border-bottom:1px solid var(--line);font-weight:600;font-size:12px;color:var(--fg);letter-spacing:.4px;text-transform:uppercase}
-  .table-wrap{flex:1;overflow:auto}
-  table{width:100%;border-collapse:collapse;table-layout:auto;font-size:12px}
-  thead th{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:1;padding:6px 4px;color:var(--fg);font-weight:600}
-  tbody td{border-bottom:1px dashed var(--line);padding:4px;text-align:center}
-  th:nth-child(1){width:43%}
-  th:nth-child(2){width:12%}
-  th:nth-child(3){width:30%}
-  th:nth-child(4){width:15%}
-  select{width:100%;padding:0;border:0;background:transparent;color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none} .completed select{background:#1fb86a !important;color:#000}
-  .num-cell{cursor:pointer;user-select:none;text-align:center;min-height:20px}
-  .num-cell:empty::before{content:"—";color:var(--fg)}
-  .check-cell{text-align:center;background:var(--bg)}
-  input[type="checkbox"]{width:16px;height:16px}
-  .completed td{background:#1fb86a !important;color:#000;text-decoration:line-through} .completed .check-cell{background:#1fb86a !important}
-  .completed td{color:#fff;text-decoration:line-through}
-  footer{border-top:1px solid var(--line);padding:8px;display:flex;justify-content:flex-end;background:var(--bg)}
-  button{padding:4px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--fg);cursor:pointer}
-  /* Overrides for minimalist + fit */
-  header{display:none}
   .table-wrap{flex:1;overflow:hidden}
-  .completed{background:#1fb86a !important}
-  .completed td{background:inherit}
-  input[type="checkbox"]{accent-color: currentColor;background:transparent}
-  /* Ensure select adopts row background when completed */
-  .completed select{background:inherit}
-  /* Ensure dropdown option list is dark themed */
-  select option{background:#0b0f14;color:inherit}
-  /* Force dark theme for dropdown option list (cross‑browser best effort) */
+  table{width:100%;border-collapse:collapse;table-layout:auto;font-size:12px}
+  thead th{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:1;padding:6px 4px;color:var(--muted);font-weight:600}
+  tbody td{border-bottom:1px dashed var(--line);padding:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  select{width:100%;padding:0;border:0;background:transparent;color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;font-size:16px}
+  .num-cell{cursor:pointer;user-select:none;text-align:center;min-height:26px}
+  .check-cell{text-align:center}
+  input[type="checkbox"]{ -webkit-appearance:none; appearance:none; width:18px; height:18px; border:1px solid var(--line); border-radius:3px; background:transparent; position:relative; display:inline-block; }
+  input[type="checkbox"]:checked{ background:#04181A; }
+  input[type="checkbox"]:checked::after{ content:""; position:absolute; left:4px; top:1px; width:6px; height:10px; border-right:2px solid #26fdff; border-bottom:2px solid #26fdff; transform: rotate(45deg); }
+  tbody tr.completed{ background:#26fdff !important; }
+  tbody tr.completed td{ color:#04181A !important; background:inherit; text-decoration:line-through; }
+  tbody tr.completed select{ color:#04181A !important; background:inherit; }
+  tbody tr.completed .check-cell{ background:inherit; }
+  tbody tr.completed input[type="checkbox"]:checked{ background:#04181A !important; }
+  tbody tr.completed input[type="checkbox"]:checked::after{ border-color:#26fdff !important; }
+  footer{border-top:1px solid var(--line);padding:8px;display:flex;justify-content:flex-end;gap:8px;background:var(--bg)}
+  button{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--fg);cursor:pointer;font-size:16px}
+  button.reset:hover{border-color:var(--danger);color:#ffd7d8}
+  .overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:saturate(1.2) blur(2px)}
+  .overlay.show{display:flex}
+  .pad{width:240px;background:var(--bg);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:10px}
+  .pad-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .pad-title{font-size:12px;color:var(--muted)}
+  .pad-close{background:transparent;border:0;color:var(--muted);font-size:16px;cursor:pointer}
+  .display{height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding:0 10px;font-size:18px;letter-spacing:2px;background:transparent}
+  .keys{margin-top:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .key{padding:10px 0;border:1px solid var(--line);border-radius:10px;text-align:center;font-weight:600;background:transparent;cursor:pointer;font-size:16px}
+  .key.enter{grid-column:1/-1;background:var(--accent);color:#00152e;border-color:#2367a6}
   body{ color-scheme: dark; }
   option, optgroup{ background: var(--bg); color: var(--fg); }
   .completed option, .completed optgroup{ background: var(--bg); color: var(--fg); }
@@ -45,7 +45,6 @@
 </head>
 <body>
   <div class="app" id="app">
-    
     <div class="table-wrap">
       <table>
         <colgroup>
@@ -69,7 +68,16 @@
       <button class="reset" id="resetBtn">Reset</button>
     </footer>
 
-    <div class="overlay" id="overlay" aria-hidden="true" style="display:none"></div>
+    <div class="overlay" id="overlay" aria-hidden="true">
+      <div class="pad" role="dialog" aria-modal="true">
+        <div class="pad-head">
+          <div class="pad-title" id="padTitle">Enter value</div>
+          <button class="pad-close" id="padClose" title="Close">×</button>
+        </div>
+        <div class="display" id="display">_</div>
+        <div class="keys" id="keys"></div>
+      </div>
+    </div>
   </div>
 
 <script>
@@ -77,11 +85,17 @@
   const TYPES = ["","Power Container","Container","Locker"];
   const ROWS = 8;
   const body = document.getElementById('body');
+  const overlay = document.getElementById('overlay');
+  const display = document.getElementById('display');
+  const keys = document.getElementById('keys');
+  const padTitle = document.getElementById('padTitle');
+  const padClose = document.getElementById('padClose');
   const resetBtn = document.getElementById('resetBtn');
+  let activeCell = null;
+  let maxLen = 0;
 
   for(let r=0;r<ROWS;r++){
     const tr = document.createElement('tr');
-
     const tdType = document.createElement('td');
     const sel = document.createElement('select');
     TYPES.forEach((t,i)=>{
@@ -91,17 +105,14 @@
     });
     tdType.appendChild(sel);
     tr.appendChild(tdType);
-
     const tdNum = document.createElement('td');
     tdNum.className='num-cell';
     tdNum.dataset.max='2';
     tr.appendChild(tdNum);
-
     const tdCode = document.createElement('td');
     tdCode.className='num-cell';
     tdCode.dataset.max='4';
     tr.appendChild(tdCode);
-
     const tdChk = document.createElement('td');
     tdChk.className='check-cell';
     const chk = document.createElement('input');
@@ -112,51 +123,87 @@
     });
     tdChk.appendChild(chk);
     tr.appendChild(tdChk);
-
     body.appendChild(tr);
   }
 
   body.addEventListener('click', (e)=>{
     const td = e.target.closest('.num-cell');
     if(!td) return;
-    const val = prompt("Enter value:", td.textContent.trim()==='—'? '' : td.textContent.trim());
-    if(val===null) return;
-    const maxLen = parseInt(td.dataset.max||'4',10);
-    const clean = val.replace(/\D/g,'').slice(0,maxLen);
-    td.textContent = clean || '—';
+    activeCell = td; maxLen = parseInt(td.dataset.max||'4',10);
+    document.querySelectorAll('.num-cell').forEach(c=>c.classList.remove('active'));
+    td.classList.add('active');
+    display.textContent = (td.textContent||'').trim() || '_';
+    padTitle.textContent = maxLen===2? 'Enter # (2 digits)' : 'Enter Code (4 digits)';
+    showPad();
+  });
+
+  function showPad(){
+    if(!keys.childElementCount){
+      for(let n=1;n<=9;n++) addKey(n);
+      addKey(0);
+      const enter = document.createElement('button');
+      enter.className='key enter';
+      enter.textContent='Enter';
+      enter.addEventListener('click', commit);
+      keys.appendChild(enter);
+    }
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden','false');
+  }
+
+  function addKey(n){
+    const b = document.createElement('button');
+    b.className='key'; b.textContent=String(n);
+    b.addEventListener('click',()=>{
+      const cur = display.textContent==='_'? '' : display.textContent;
+      if(cur.length >= maxLen) return;
+      display.textContent = (cur + String(n)).slice(0,maxLen);
+    });
+    keys.appendChild(b);
+  }
+
+  function commit(){
+    if(!activeCell) return closePad();
+    const v = display.textContent==='_'? '' : display.textContent;
+    activeCell.textContent = v;
+    activeCell.classList.remove('active');
+    activeCell = null;
+    closePad();
+  }
+
+  function closePad(){
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+  }
+
+  padClose.addEventListener('click', closePad);
+  overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closePad(); });
+
+  document.addEventListener('keydown', (e)=>{
+    if(!overlay.classList.contains('show')) return;
+    if(e.key>='0' && e.key<='9'){
+      const cur = display.textContent==='_'? '' : display.textContent;
+      if(cur.length < maxLen){ display.textContent = cur + e.key; }
+      e.preventDefault();
+    } else if(e.key==='Enter'){ commit(); e.preventDefault(); }
+    else if(e.key==='Escape'){ closePad(); e.preventDefault(); }
+    else if(e.key==='Backspace'){
+      const cur = display.textContent==='_'? '' : display.textContent;
+      const next = cur.slice(0,-1);
+      display.textContent = next || '_';
+      e.preventDefault();
+    }
   });
 
   resetBtn.addEventListener('click', ()=>{
     const ok = confirm('Reset all entries?');
     if(!ok) return;
     document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
-    document.querySelectorAll('.num-cell').forEach(c=>c.textContent='—');
+    document.querySelectorAll('.num-cell').forEach(c=>c.textContent='');
     document.querySelectorAll('input[type="checkbox"]').forEach(ch=>{ch.checked=false});
     document.querySelectorAll('tbody tr').forEach(tr=>tr.classList.remove('completed'));
   });
 })();
-  // Dynamic column widths based on content (minimal visuals)
-  function setColWidths(){
-    const ctx = document.createElement('canvas').getContext('2d');
-    const table = document.querySelector('table');
-    const style = getComputedStyle(table);
-    ctx.font = `${style.fontSize} ${style.fontFamily}`;
-    const measure = (t)=> Math.ceil(ctx.measureText(t).width);
-    const lockMax = Math.max(measure('Lock Type'), measure('Power Container')) + 16;
-    const numMax  = Math.max(measure('#'), measure('88'), measure('—')) + 12;
-    const codeMax = Math.max(measure('Code'), measure('8888'), measure('—')) + 12;
-    const checkMax= Math.max(measure('✓'), 22);
-    const total = lockMax + numMax + codeMax + checkMax;
-    const w = table.getBoundingClientRect().width || 329;
-    const scale = w/total;
-    const widths = [lockMax, numMax, codeMax, checkMax].map(x=>Math.max(30, Math.floor(x*scale)));
-    document.getElementById('col1').style.width = widths[0] + 'px';
-    document.getElementById('col2').style.width = widths[1] + 'px';
-    document.getElementById('col3').style.width = widths[2] + 'px';
-    document.getElementById('col4').style.width = widths[3] + 'px';
-  }
-  window.addEventListener('resize', setColWidths);
-  setTimeout(setColWidths, 0);
 </script>
 </body>
 </html>
