@@ -151,6 +151,20 @@
     /*  tbody tr.completed input[type="checkbox"]:checked { background: #04181A !important; }
     tbody tr.completed input[type="checkbox"]:checked::after { border-color: #26fdff !important;}*/
 
+    /* iOS/Safari: remove blue focus ring on the Lock Type <select> */
+    select:focus,
+    select:focus-visible {
+        outline: none;
+        box-shadow: none; /* suppress WebKit inner glow */
+    }
+
+    /* also remove the blue tap flash on touch */
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+
+
     .locktext {
         display: block;
         font-size: 16px;
