@@ -5,42 +5,298 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Lock Sheet</title>
 <style>
-  :root {--w:329px;--h:364px;--bg:#301901;--fg:#ffffff;--muted:#f07b05;--line:#f07b05;--accent:#4ea1ff;--danger:#ff5a5f;}
-  *{box-sizing:border-box;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
-  html,body{margin:0;background:var(--bg);color:var(--fg)}
-  .app{width:var(--w);height:var(--h);display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg)}
-  .table-wrap{flex:1;overflow:hidden}
-  table{width:100%;border-collapse:collapse;table-layout:auto;font-size:12px}
-  thead th{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);z-index:1;padding:6px 4px;color:var(--muted);font-weight:600}
-  tbody td{border-bottom:1px dashed var(--line);padding:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  select{width:100%;padding:0;border:0;background:transparent;color:inherit;appearance:none;-webkit-appearance:none;-moz-appearance:none;font-size:16px}
-  .num-cell{cursor:pointer;user-select:none;text-align:center;min-height:26px}
-  .check-cell{text-align:center}
-  input[type="checkbox"]{ -webkit-appearance:none; appearance:none; width:18px; height:18px; border:1px solid var(--line); border-radius:3px; background:transparent; position:relative; display:inline-block; }
-  input[type="checkbox"]:checked{ background:#04181A; }
-  input[type="checkbox"]:checked::after{ content:""; position:absolute; left:4px; top:1px; width:6px; height:10px; border-right:2px solid #26fdff; border-bottom:2px solid #26fdff; transform: rotate(45deg); }
-  tbody tr.completed{ background:#26fdff !important; }
-  tbody tr.completed td{ color:#04181A !important; background:inherit; text-decoration:line-through; }
-  tbody tr.completed select{ color:#04181A !important; background:inherit; }
-  tbody tr.completed .check-cell{ background:inherit; }
-  tbody tr.completed input[type="checkbox"]:checked{ background:#04181A !important; }
-  tbody tr.completed input[type="checkbox"]:checked::after{ border-color:#26fdff !important; }
-  footer{border-top:1px solid var(--line);padding:8px;display:flex;justify-content:flex-end;gap:8px;background:var(--bg)}
-  button{padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--fg);cursor:pointer;font-size:16px}
-  button.reset:hover{border-color:var(--danger);color:#ffd7d8}
-  .overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:saturate(1.2) blur(2px)}
-  .overlay.show{display:flex}
-  .pad{width:240px;background:var(--bg);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.5);padding:10px}
-  .pad-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-  .pad-title{font-size:12px;color:var(--muted)}
-  .pad-close{background:transparent;border:0;color:var(--muted);font-size:16px;cursor:pointer}
-  .display{height:34px;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:flex-end;padding:0 10px;font-size:18px;letter-spacing:2px;background:transparent}
-  .keys{margin-top:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .key{padding:10px 0;border:1px solid var(--line);border-radius:10px;text-align:center;font-weight:600;background:transparent;cursor:pointer;font-size:16px}
-  .key.enter{grid-column:1/-1;background:var(--accent);color:#00152e;border-color:#2367a6}
-  body{ color-scheme: dark; }
-  option, optgroup{ background: var(--bg); color: var(--fg); }
-  .completed option, .completed optgroup{ background: var(--bg); color: var(--fg); }
+    :root {
+        --w: 329px;
+        --h: 364px;
+        --bg: #301901;
+        --fg: #ffffff;
+        --muted: #f07b05;
+        --line: #f07b05;
+        --accent: #4ea1ff;
+        --danger: #ff5a5f;
+    }
+
+    * {
+        box-sizing: border-box;
+        font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial
+    }
+
+    html, body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg)
+    }
+
+    .app {
+        width: var(--w);
+        height: var(--h);
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bg)
+    }
+
+    .table-wrap {
+        flex: 1;
+        overflow: hidden
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: 12px
+    }
+
+    thead th {
+        position: sticky;
+        top: 0;
+        background: var(--bg);
+        border-bottom: 1px solid var(--line);
+        z-index: 1;
+        padding: 6px 4px;
+        color: var(--muted);
+        font-weight: 600
+    }
+
+    tbody td {
+        border-bottom: 1px dashed var(--line);
+        padding: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis
+    }
+
+    select {
+        width: 100%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        font-size: 16px
+    }
+
+    .num-cell {
+        cursor: pointer;
+        user-select: none;
+        text-align: center;
+        min-height: 26px;
+        font-size: 16px
+    }
+
+    .check-cell {
+        text-align: center
+    }
+
+    input[type="checkbox"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        background: transparent;
+        position: relative;
+        display: inline-block;
+    }
+
+        input[type="checkbox"]:checked {
+            background: #26fdff;
+            border-color: #04181A;
+        }
+
+            input[type="checkbox"]:checked::after {
+                content: "";
+                position: absolute;
+                left: 4px;
+                top: 1px;
+                width: 6px;
+                height: 10px;
+                border-right: 2px solid #26fdff;
+                border-bottom: 2px solid #26fdff;
+                transform: rotate(45deg);
+            }
+
+    tbody tr.completed {
+        background: #26fdff !important;
+    }
+
+        tbody tr.completed td {
+            color: #04181A !important;
+            background: inherit;
+            text-decoration: line-through;
+        }
+
+        tbody tr.completed select {
+            color: #04181A !important;
+            background: inherit;
+        }
+
+        tbody tr.completed .check-cell {
+            background: inherit;
+        }
+
+        tbody tr.completed input[type="checkbox"]:checked {
+            background: #04181A !important;
+        }
+
+            tbody tr.completed input[type="checkbox"]:checked::after {
+                border-color: #26fdff !important;
+            }
+    /*  tbody tr.completed input[type="checkbox"]:checked { background: #04181A !important; }
+    tbody tr.completed input[type="checkbox"]:checked::after { border-color: #26fdff !important;}*/
+
+    .locktext {
+        display: block;
+        font-size: 16px;
+    }
+
+
+    table {
+        table-layout: fixed;
+    }
+    /* ensures col widths are respected */
+
+    col#col1 {
+        width: 40%;
+    }
+    /* Lock Type */
+    col#col2 {
+        width: 8%;
+    }
+    /* # */
+    col#col3 {
+        width: 32%;
+    }
+    /* Code */
+    col#col4 {
+        width: 20%;
+    }
+    /* ✓ */
+
+    footer {
+        border-top: 1px solid var(--line);
+        padding: 5px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        background: var(--bg)
+    }
+
+    button {
+        padding: 6px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--fg);
+        cursor: pointer;
+        font-size: 16px
+    }
+
+        button.reset:hover {
+            border-color: var(--danger);
+            color: #ffd7d8
+        }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,.45);
+        backdrop-filter: saturate(1.2) blur(2px)
+    }
+
+        .overlay.show {
+            display: flex
+        }
+
+    .pad {
+        width: 240px;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.5);
+        padding: 10px
+    }
+
+    .pad-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px
+    }
+
+    .pad-title {
+        font-size: 12px;
+        color: var(--muted)
+    }
+
+    .pad-close {
+        background: transparent;
+        border: 0;
+        color: var(--muted);
+        font-size: 16px;
+        cursor: pointer
+    }
+
+    .display {
+        height: 34px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 10px;
+        font-size: 18px;
+        letter-spacing: 2px;
+        background: transparent
+    }
+
+    .keys {
+        margin-top: 8px;
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 8px
+    }
+
+    .key {
+        padding: 10px 0;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        text-align: center;
+        font-weight: 600;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px
+    }
+
+        .key.enter {
+            grid-column: 1/-1;
+            background: var(--accent);
+            color: #00152e;
+            border-color: #2367a6
+        }
+
+    body {
+        color-scheme: dark;
+    }
+
+    option, optgroup {
+        background: var(--bg);
+        color: var(--fg);
+    }
+
+    .completed option, .completed optgroup {
+        background: var(--bg);
+        color: var(--fg);
+    }
 </style>
 </head>
 <body>
@@ -104,6 +360,7 @@
       sel.appendChild(o);
     });
     tdType.appendChild(sel);
+    tdType._selectEl = sel; // keep a reference so we can restore it later
     tr.appendChild(tdType);
     const tdNum = document.createElement('td');
     tdNum.className='num-cell';
@@ -117,10 +374,35 @@
     tdChk.className='check-cell';
     const chk = document.createElement('input');
     chk.type='checkbox';
-    chk.addEventListener('change',()=>{
-      if(chk.checked){ tr.classList.add('completed'); }
-      else { tr.classList.remove('completed'); }
+    chk.addEventListener('change', () => {
+        const tdType = tr.children[0];
+        const sel = tdType._selectEl || tdType.querySelector('select');
+
+        if (chk.checked) {
+            tr.classList.add('completed');
+
+            // Swap <select> → <span> so strike-through works uniformly
+            if (sel && sel.parentElement === tdType) {
+                const span = document.createElement('span');
+                span.className = 'locktext';
+                const txt = sel.options[sel.selectedIndex]?.text || '—';
+                span.textContent = txt;
+                tdType.replaceChild(span, sel);
+                tdType._textEl = span;     // stash the text node
+                tdType._selectEl = sel;    // stash original select
+            }
+        } else {
+            tr.classList.remove('completed');
+
+            // Swap back <span> → <select>
+            const sp = tdType._textEl;
+            if (sp && sp.parentElement === tdType && tdType._selectEl) {
+                tdType.replaceChild(tdType._selectEl, sp);
+                tdType._textEl = null;
+            }
+        }
     });
+
     tdChk.appendChild(chk);
     tr.appendChild(tdChk);
     body.appendChild(tr);
@@ -195,14 +477,25 @@
     }
   });
 
-  resetBtn.addEventListener('click', ()=>{
+resetBtn.addEventListener('click', () => {
     const ok = confirm('Reset all entries?');
-    if(!ok) return;
-    document.querySelectorAll('select').forEach(s=>s.selectedIndex=0);
-    document.querySelectorAll('.num-cell').forEach(c=>c.textContent='');
-    document.querySelectorAll('input[type="checkbox"]').forEach(ch=>{ch.checked=false});
-    document.querySelectorAll('tbody tr').forEach(tr=>tr.classList.remove('completed'));
-  });
+    if (!ok) return;
+
+    // Ensure Lock Type column is restored to a <select> in every row
+    document.querySelectorAll('tbody tr').forEach(tr => {
+        const tdType = tr.children[0];
+        if (tdType && tdType._textEl && tdType._selectEl && tdType._textEl.parentElement === tdType) {
+            tdType.replaceChild(tdType._selectEl, tdType._textEl);
+            tdType._textEl = null;
+        }
+    });
+
+    document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+    document.querySelectorAll('.num-cell').forEach(c => c.textContent = '');
+    document.querySelectorAll('input[type="checkbox"]').forEach(ch => { ch.checked = false });
+    document.querySelectorAll('tbody tr').forEach(tr => tr.classList.remove('completed'));
+});
+
 })();
 </script>
 </body>
